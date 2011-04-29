@@ -23,8 +23,8 @@
 @implementation AppController : CPObject
 {
     CPView m_contentView;
-    JSObject m_current_data;
     CPTextField m_github_username;
+    CPArray m_viewed_followers;
 }
 
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
@@ -52,6 +52,7 @@
     [m_contentView addSubview:m_github_username];
 
     [theWindow orderFront:self];
+    m_viewed_followers = [CPArray array];
 }
 
 - (CPAction)findFollowers:(id)sender
@@ -63,6 +64,13 @@
         if ( [subviews[count] isKindOfClass:CPImageView] )
             [subviews[count] removeFromSuperview];
 
+    for ( var idx = 0; idx < [m_viewed_followers count]; idx++ ) {
+        var imageView = m_viewed_followers[idx];
+        [imageView removeFromSuperview];
+        [m_contentView addSubview:imageView];
+        [imageView setFrameOrigin:CGPointMake( 10+(idx*60), 10)];
+    }
+
     [[CommunicationManager sharedInstance]
         followersFor:[sender stringValue]
             delegate:self
@@ -71,24 +79,26 @@
 
 - (CPAction)imageClicked:(id)sender
 {
+    if ( CPNotFound == [m_viewed_followers indexOfObject:sender] ) {
+        m_viewed_followers.push( sender );
+    }
     [m_github_username setStringValue:[sender dataObject]["username"]];
     [self findFollowers:m_github_username];
 }
 
 - (void)followerData:(JSObject)data
 {
-    m_current_data = data;
-    var xLoc = 10, yLoc = -40;
+    var xLoc = 10, yLoc = 20;
 
     for ( var idx = 0; idx < [data["count"] intValue]; idx++ ) {
         yLoc += 50;
         if ( (yLoc + 50) > CGRectGetHeight( [m_contentView bounds] ) ) {
             xLoc += 60;
-            yLoc = 10;
+            yLoc = 70;
         }
         var imageView = [[GravatorImageView alloc]
                             initWithFrame:CGRectMake(xLoc,yLoc,50,50)];
-        [imageView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+        [imageView setAutoresizingMask:CPViewNotSizable];
         [imageView setImageScaling:CPScaleProportionally];
         [imageView setHasShadow:YES];
         [imageView setDataObject:data["value"]["items"][idx]];

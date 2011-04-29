@@ -1,0 +1,41 @@
+== Github Followers using Yahoo! Pipes
+
+This is a very simple Cappuccino application that uses a Yahoo! Pipe to
+retrieve Github followers.
+
+== Motivation
+
+Wanting to combine Yahoo! Pipes with Cappuccino!
+
+No real motivation, just bring some technologies together.
+
+The Pipe used for this can be found here:
+
+http://pipes.yahoo.com/pipes/pipe.info?_id=88908111d5b1a32c1c41aefa25fa188d
+
+And Cappuccino can be found here http://cappuccino.org
+
+== Technical
+
+What happens is that the Cappuccino application will do a JSONP request
+from your browser to Yahoo! to run the pipe. What the pipe will do, is
+a request to http://github.com/<username>/followers. The HTML that
+is returned is parsed by the Yahoo! pipe and will be outputted as JSON.
+
+The JSON is sucked into the Cappuccino application and the image URLs are
+retirieved and shown.
+
+The server that original delivered the Javascript code (that is the Cappuccino
+application) does nothing except to send out the Javascript.
+
+== Demo
+
+Demo can be found here http://gitfol.2monki.es
+
+Top row are the users you've already clicked on (i.e. initial none). The images shown,
+after entering a github username, are their followers. Click on an image to
+the next set of followers.
+
+Note also, depending on Yahoo!, the image may appear quicker or slower -- depending
+on your internet connection and that for github and yahoo.
+
