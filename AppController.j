@@ -22,92 +22,112 @@
 
 @implementation AppController : CPObject
 {
-    CPView m_contentView;
-    CPTextField m_github_username;
-    CPArray m_viewed_followers;
+    CPWindow theWindow;
+
+    CPMutableArray m_followers;
+    CPMutableArray m_following;
+    Developer m_developer;
+
+    @outlet CPArrayController m_followersController;
+    @outlet CPArrayController m_followingController;
+    @outlet CPImageView m_imageView;
+}
+
+
+//
+// Initialisation
+//
+- (id)init
+{
+    m_followers = [[CPMutableArray alloc] init];
+    m_following = [[CPMutableArray alloc] init];
+    m_developer = [[Developer alloc] initWithJSONObject:{ "name" : "280 North",
+                                                          "username" : "280north" }];
+    return self;
+}
+
+- (void)awakeFromCib
+{
+    [self triggerRetrieve:[m_developer userName]];
+    [theWindow setFullBridge:YES];
 }
 
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
 {
-    var theWindow = [[CPWindow alloc] initWithContentRect:CGRectMakeZero() styleMask:CPBorderlessBridgeWindowMask];
-
-    m_contentView = [theWindow contentView];
-
-    [PlaceholderManager sharedInstance];
-
-    m_github_username = [[CPTextField alloc]
-                            initWithFrame:CGRectMake( 10, 10, 250, 50 )];
-    [m_github_username setEditable:YES];
-    [m_github_username setEnabled:YES];
-    [m_github_username setTarget:self];
-    [m_github_username setAction:@selector(findFollowers:)];
-    [m_github_username setStringValue:@"Github username"];
-    [m_github_username setFont:[CPFont boldSystemFontOfSize:24.0]];
-    [m_github_username setBordered:YES];
-    [m_github_username setBezeled:YES];
-    [m_github_username setBezelStyle:CPTextFieldSquareBezel];
-    [m_github_username selectText:m_github_username];
-    [m_github_username becomeFirstResponder];
-    [m_github_username setCenter:[m_contentView center]];
-    [m_contentView addSubview:m_github_username];
-
-    [theWindow orderFront:self];
-    m_viewed_followers = [CPArray array];
 }
 
+//
+// Actions
+//
 - (CPAction)findFollowers:(id)sender
 {
-    var count = [[m_contentView subviews] count],
-        subviews = [m_contentView subviews];
-
-    while ( count-- )
-        if ( [subviews[count] isKindOfClass:CPImageView] )
-            [subviews[count] removeFromSuperview];
-
-    for ( var idx = 0; idx < [m_viewed_followers count]; idx++ ) {
-        var imageView = m_viewed_followers[idx];
-        [imageView removeFromSuperview];
-        [m_contentView addSubview:imageView];
-        [imageView setFrameOrigin:CGPointMake( 10+(idx*60), 10)];
-    }
-
-    [[CommunicationManager sharedInstance]
-        followersFor:[sender stringValue]
-            delegate:self
-            selector:@selector(followerData:)];
+    [self triggerRetrieve:[m_developer userName]];
+    [ImageLoaderWorker workerFor:"" imageView:m_imageView];
 }
 
-- (CPAction)imageClicked:(id)sender
+- (CPAction)followerSelected:(id)sender
 {
-    if ( CPNotFound == [m_viewed_followers indexOfObject:sender] ) {
-        m_viewed_followers.push( sender );
+    var developer = m_followers[[sender selectedRow]];
+    [m_developer setName:[developer name]];
+    [m_developer setUserName:[developer userName]];
+    [m_developer setImageUrl:[developer imageUrl]];
+    [ImageLoaderWorker workerFor:[m_developer imageUrl] imageView:m_imageView];
+}
+
+- (CPAction)followingSelected:(id)sender
+{
+    var developer = m_following[[sender selectedRow]];
+    [m_developer setName:[developer name]];
+    [m_developer setUserName:[developer userName]];
+    [m_developer setImageUrl:[developer imageUrl]];
+    [ImageLoaderWorker workerFor:[m_developer imageUrl] imageView:m_imageView];
+}
+
+//
+// Callbacks from the the communication manager
+//
+- (void)followingData:(JSObject)data
+{
+    [m_following removeAllObjects];
+    for ( var idx = 0; idx < [data["count"] intValue] - 1; idx++ ) {
+        [m_following addObject:[[Developer alloc]
+                                   initWithJSONObject:data["value"]["items"][idx]]]
     }
-    [m_github_username setStringValue:[sender dataObject]["username"]];
-    [self findFollowers:m_github_username];
+    [m_followingController setContent:m_following];
 }
 
 - (void)followerData:(JSObject)data
 {
-    var xLoc = 10, yLoc = 20;
-
-    for ( var idx = 0; idx < [data["count"] intValue]; idx++ ) {
-        yLoc += 50;
-        if ( (yLoc + 50) > CGRectGetHeight( [m_contentView bounds] ) ) {
-            xLoc += 60;
-            yLoc = 70;
-        }
-        var imageView = [[GravatorImageView alloc]
-                            initWithFrame:CGRectMake(xLoc,yLoc,50,50)];
-        [imageView setAutoresizingMask:CPViewNotSizable];
-        [imageView setImageScaling:CPScaleProportionally];
-        [imageView setHasShadow:YES];
-        [imageView setDataObject:data["value"]["items"][idx]];
-        [imageView setTarget:self];
-        [imageView setAction:@selector(imageClicked:)];
-        [ImageLoaderWorker workerFor:data["value"]["items"][idx]["image"]
-                           imageView:imageView];
-        [m_contentView addSubview:imageView];
+    [m_followers removeAllObjects];
+    var idx = 0;
+    for ( ; idx < [data["count"] intValue] - 1; idx++ ) {
+        var dev = [[Developer alloc] initWithJSONObject:data["value"]["items"][idx]];
+        [m_followers addObject:dev]
     }
+
+    [m_followersController setContent:m_followers];
+    [self updateDeveloper:data["value"]["items"][idx]];
 }
 
+//
+// Helpers
+//
+- (void)updateDeveloper:(JSObject)anObject
+{
+    [m_developer updateFromJson:anObject];
+    [ImageLoaderWorker workerFor:[m_developer imageUrl] imageView:m_imageView];
+}
+
+- (void)triggerRetrieve:(CPString)aUserName
+{
+    [[CommunicationManager sharedInstance]
+        followersFor:aUserName
+            delegate:self
+            selector:@selector(followerData:)];
+
+    [[CommunicationManager sharedInstance]
+        userFollowing:aUserName
+             delegate:self
+             selector:@selector(followingData:)];
+}
 @end

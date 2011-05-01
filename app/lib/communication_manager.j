@@ -18,7 +18,9 @@
 
 var CommunicationManagerInstance = nil;
 
-var BaseUrl = "http://pipes.yahoo.com/pipes/pipe.run?_id=88908111d5b1a32c1c41aefa25fa188d&_render=json";
+var PipeIdFollowers = "521af6886680bf0c16355274ee0b46f6";
+var PipeIdFollowing = "beb4613138f82f83c456c4cb689feab3";
+var BaseUrl = "http://pipes.yahoo.com/pipes/pipe.run?_id=%s&_render=json&githubusername=%s";
 
 @implementation CommunicationManager : CPObject
 
@@ -38,18 +40,33 @@ var BaseUrl = "http://pipes.yahoo.com/pipes/pipe.run?_id=88908111d5b1a32c1c41aef
   return CommunicationManagerInstance;
 }
 
+// Get the followers of the user
 - (void)followersFor:(CPString)aUserName
             delegate:(id)aDelegate
             selector:(SEL)aSelector
 {
-  var url = [CPString stringWithFormat:@"%s&githubusername=%s",
-                      BaseUrl, encodeURIComponent(aUserName)];
+  var url = [CPString stringWithFormat:BaseUrl,
+                      PipeIdFollowers,
+                      encodeURIComponent(aUserName)];
   [PMCMWjsonpWorker workerWithUrl:url
                          delegate:aDelegate
                          selector:aSelector
                          callback:"_callback"];
 }
 
+// get the developers who this user is following
+- (void)userFollowing:(CPString)aUserName
+            delegate:(id)aDelegate
+            selector:(SEL)aSelector
+{
+  var url = [CPString stringWithFormat:BaseUrl,
+                      PipeIdFollowing,
+                      encodeURIComponent(aUserName)];
+  [PMCMWjsonpWorker workerWithUrl:url
+                         delegate:aDelegate
+                         selector:aSelector
+                         callback:"_callback"];
+}
 
 @end
 

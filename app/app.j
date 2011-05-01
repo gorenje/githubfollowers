@@ -20,4 +20,4 @@
 @import "lib/communication_workers.j"
 @import "lib/placeholder_manager.j"
 @import "lib/image_loader_helpers.j"
-@import "views/gravator_image_view.j"
+@import "models/developer.j"
