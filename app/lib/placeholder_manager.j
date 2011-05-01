@@ -26,10 +26,6 @@ var ImageAry = [];
 @implementation PlaceholderManager : CPObject
 {
   CPDictionary _store;
-
-  PMGetImageWorker _waitingOnImage;
-  PMGetImageWorker _spinnerImage;
-  PMGetImageWorker _quotesImage;
 }
 
 - (id)init
@@ -70,18 +66,13 @@ var ImageAry = [];
   return [[PlaceholderManager sharedInstance] performSelector:aMethodName];
 }
 
-+ (CPString)placeholderImageUrl {
-  return @"http://assets.2monki.es/images/placeholder.png";
-}
-
-+ (CPString)moustacheImageUrl {
-  return @"http://assets.2monki.es/images/moustache.png";
-}
-
 //
 // Instance methods.
 //
 
-- (CPImage)spinner { return [[_store objectForKey:"sp"] image]; }
+- (CPImage)spinner
+{
+  return [[_store objectForKey:"sp"] image];
+}
 
 @end

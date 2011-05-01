@@ -1,41 +1,31 @@
-== Github Followers using Yahoo! Pipes
+== Github Follow{ers,ing} using Yahoo! Pipes
 
-This is a very simple Cappuccino application that uses a Yahoo! Pipe to
-retrieve Github followers.
+This is a very simple Cappuccino application that uses Yahoo! Pipes to
+retrieve Github followers and followings.
+
+Of course, this could have been done with the Github API, but it all
+started out with a couple of Yahoo pipes and went from there.
 
 == Motivation
 
-Wanting to combine Yahoo! Pipes with Cappuccino!
+Combining Yahoo! Pipes with Cappuccino and using bindings to build an GUI.
 
-No real motivation, just bring some technologies together.
+The Pipes used for this can be found here:
 
-The Pipe used for this can be found here:
-
-http://pipes.yahoo.com/pipes/pipe.info?_id=88908111d5b1a32c1c41aefa25fa188d
+http://pipes.yahoo.com/pipes/pipe.info?_id=521af6886680bf0c16355274ee0b46f6 (followers)
+http://pipes.yahoo.com/pipes/pipe.info?_id=beb4613138f82f83c456c4cb689feab3 (following)
 
 And Cappuccino can be found here http://cappuccino.org
-
-== Technical
-
-What happens is that the Cappuccino application will do a JSONP request
-from your browser to Yahoo! to run the pipe. What the pipe will do, is
-a request to http://github.com/<username>/followers. The HTML that
-is returned is parsed by the Yahoo! pipe and will be outputted as JSON.
-
-The JSON is sucked into the Cappuccino application and the image URLs are
-retirieved and shown.
-
-The server that original delivered the Javascript code (that is the Cappuccino
-application) does nothing except to send out the Javascript.
 
 == Demo
 
 Demo can be found here http://gitfol.2monki.es
 
-Top row are the users you've already clicked on (i.e. initial none). The images shown,
-after entering a github username, are their followers. Click on an image to
-the next set of followers.
+== Limitations
 
-Note also, depending on Yahoo!, the image may appear quicker or slower -- depending
-on your internet connection and that for github and yahoo.
+Because the Pipes only retrieve the first page of the following and followers, a
+maximum of 20 for both will be shown.
 
+== Thanks
+
+Thanks to Mafis for the bindings example: https://github.com/mafis/Cappuccino-Bindings-Demo

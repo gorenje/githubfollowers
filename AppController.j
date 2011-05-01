@@ -33,7 +33,6 @@
     @outlet CPImageView m_imageView;
 }
 
-
 //
 // Initialisation
 //
@@ -63,24 +62,20 @@
 {
     [self triggerRetrieve:[m_developer userName]];
     [ImageLoaderWorker workerFor:"" imageView:m_imageView];
+    [m_following removeAllObjects];
+    [m_followers removeAllObjects];
+    [m_followersController setContent:m_followers];
+    [m_followingController setContent:m_following];
 }
 
 - (CPAction)followerSelected:(id)sender
 {
-    var developer = m_followers[[sender selectedRow]];
-    [m_developer setName:[developer name]];
-    [m_developer setUserName:[developer userName]];
-    [m_developer setImageUrl:[developer imageUrl]];
-    [ImageLoaderWorker workerFor:[m_developer imageUrl] imageView:m_imageView];
+    [self updateDeveloperFromDeveloper:m_followers[[sender selectedRow]]];
 }
 
 - (CPAction)followingSelected:(id)sender
 {
-    var developer = m_following[[sender selectedRow]];
-    [m_developer setName:[developer name]];
-    [m_developer setUserName:[developer userName]];
-    [m_developer setImageUrl:[developer imageUrl]];
-    [ImageLoaderWorker workerFor:[m_developer imageUrl] imageView:m_imageView];
+    [self updateDeveloperFromDeveloper:m_following[[sender selectedRow]]];
 }
 
 //
@@ -89,10 +84,10 @@
 - (void)followingData:(JSObject)data
 {
     [m_following removeAllObjects];
-    for ( var idx = 0; idx < [data["count"] intValue] - 1; idx++ ) {
+    for ( var idx = 0; idx < [data["count"] intValue] - 1; idx++ )
         [m_following addObject:[[Developer alloc]
                                    initWithJSONObject:data["value"]["items"][idx]]]
-    }
+
     [m_followingController setContent:m_following];
 }
 
@@ -100,21 +95,26 @@
 {
     [m_followers removeAllObjects];
     var idx = 0;
-    for ( ; idx < [data["count"] intValue] - 1; idx++ ) {
-        var dev = [[Developer alloc] initWithJSONObject:data["value"]["items"][idx]];
-        [m_followers addObject:dev]
-    }
+    for ( ; idx < [data["count"] intValue] - 1; idx++ )
+        [m_followers addObject:[[Developer alloc]
+                                   initWithJSONObject:data["value"]["items"][idx]]]
 
     [m_followersController setContent:m_followers];
-    [self updateDeveloper:data["value"]["items"][idx]];
+
+    // the last member of the items is always the owner, i.e. the developer for whom
+    // we just got the data.
+    [m_developer updateFromJson:data["value"]["items"][idx]];
+    [ImageLoaderWorker workerFor:[m_developer imageUrl] imageView:m_imageView];
 }
 
 //
 // Helpers
 //
-- (void)updateDeveloper:(JSObject)anObject
+- (void)updateDeveloperFromDeveloper:(Developer)developer
 {
-    [m_developer updateFromJson:anObject];
+    [m_developer setName:[developer name]];
+    [m_developer setUserName:[developer userName]];
+    [m_developer setImageUrl:[developer imageUrl]];
     [ImageLoaderWorker workerFor:[m_developer imageUrl] imageView:m_imageView];
 }
 
