@@ -90,6 +90,10 @@
 {
 }
 
+- (void)setAction:(SEL)anAction
+{
+}
+
 @end
 
 
