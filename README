@@ -8,7 +8,7 @@ started out with a couple of Yahoo pipes and went from there.
 
 == Motivation
 
-Combining Yahoo! Pipes with Cappuccino and using bindings to build an GUI.
+Combining Yahoo! Pipes with Cappuccino.
 
 The Pipes used for this can be found here:
 
@@ -16,6 +16,11 @@ http://pipes.yahoo.com/pipes/pipe.info?_id=521af6886680bf0c16355274ee0b46f6 (fol
 http://pipes.yahoo.com/pipes/pipe.info?_id=beb4613138f82f83c456c4cb689feab3 (following)
 
 And Cappuccino can be found here http://cappuccino.org
+
+Also being used are:
+ - Bindings to handle the interface updates.
+ - JSONP for communication -- for those new to Cappuccino, JSONP is built right in.
+ - Specific data views for a TableView -- thanks to CappuTweetie.
 
 == Demo
 
@@ -28,4 +33,8 @@ maximum of 20 for both will be shown.
 
 == Thanks
 
-Thanks to Mafis for the bindings example: https://github.com/mafis/Cappuccino-Bindings-Demo
+Thanks to
+ - Mafis for the bindings example: https://github.com/mafis/Cappuccino-Bindings-Demo
+ - Me1000 for CappuTweetie: https://github.com/Me1000/CappuTweetie
+
+
