@@ -20,4 +20,8 @@
 @import "lib/communication_workers.j"
 @import "lib/placeholder_manager.j"
 @import "lib/image_loader_helpers.j"
+
 @import "models/developer.j"
+
+@import "views/developer_data_view.j"
+@import "views/rounded_image_view.j"

@@ -22,15 +22,18 @@
 
 @implementation AppController : CPObject
 {
-    CPWindow theWindow;
+    @outlet CPWindow theWindow;
 
+    // Binding "outlets"
     CPMutableArray m_followers;
     CPMutableArray m_following;
-    Developer m_developer;
+    Developer      m_developer;
 
+    @outlet CPTableView       m_followers_table;
+    @outlet CPTableView       m_following_table;
     @outlet CPArrayController m_followersController;
     @outlet CPArrayController m_followingController;
-    @outlet CPImageView m_imageView;
+    @outlet RoundedImageView  m_imageView;
 }
 
 //
@@ -48,6 +51,15 @@
 - (void)awakeFromCib
 {
     [self triggerRetrieve:[m_developer userName]];
+
+    var dataColumn = [m_followers_table  tableColumnWithIdentifier:"username"];
+    var dataViewPrototype = [[DeveloperDataView alloc] initWithFrame:CGRectMake(0,0,322,100)];
+    [dataColumn setDataView:dataViewPrototype];
+
+    var dataColumn = [m_following_table  tableColumnWithIdentifier:"username"];
+    var dataViewPrototype = [[DeveloperDataView alloc] initWithFrame:CGRectMake(0,0,322,100)];
+    [dataColumn setDataView:dataViewPrototype];
+
     [theWindow setFullBridge:YES];
 }
 
@@ -130,4 +142,5 @@
              delegate:self
              selector:@selector(followingData:)];
 }
+
 @end
