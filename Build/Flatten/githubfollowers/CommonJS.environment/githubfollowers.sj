@@ -247,7 +247,7 @@ objj_msgSend(_15,"setUserName:",_17["username"]);
 objj_msgSend(_15,"setImageUrl:",_17["image"]);
 }
 })]);
-p;31;app/views/developer_data_view.jt;2477;@STATIC;1.0;t;2458;
+p;31;app/views/developer_data_view.jt;2557;@STATIC;1.0;t;2538;
 var _1=objj_allocateClassPair(CPView,"DeveloperDataView"),_2=_1.isa;
 class_addIvars(_1,[new objj_ivar("m_developer"),new objj_ivar("authorName"),new objj_ivar("authorAvatarView")]);
 objj_registerClassPair(_1);
@@ -299,6 +299,9 @@ return _13;
 }
 }),new objj_method(sel_getUid("setTarget:"),function(_16,_17,_18){
 with(_16){
+}
+}),new objj_method(sel_getUid("setAction:"),function(_19,_1a,_1b){
+with(_19){
 }
 })]);
 p;30;app/views/rounded_image_view.jt;1982;@STATIC;1.0;t;1963;
