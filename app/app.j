@@ -17,7 +17,6 @@
  */
 
 @import "lib/communication_manager.j"
-@import "lib/communication_workers.j"
 @import "lib/placeholder_manager.j"
 @import "lib/image_loader_helpers.j"
 

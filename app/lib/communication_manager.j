@@ -45,27 +45,27 @@ var BaseUrl = "http://pipes.yahoo.com/pipes/pipe.run?_id=%s&_render=json&githubu
             delegate:(id)aDelegate
             selector:(SEL)aSelector
 {
-  var url = [CPString stringWithFormat:BaseUrl,
-                      PipeIdFollowers,
+  var url = [CPString stringWithFormat:BaseUrl, PipeIdFollowers,
                       encodeURIComponent(aUserName)];
-  [PMCMWjsonpWorker workerWithUrl:url
-                         delegate:aDelegate
-                         selector:aSelector
-                         callback:"_callback"];
+
+  [GRCWJsonpWorker workerWithUrl:url
+                        delegate:aDelegate
+                        selector:aSelector
+                        callback:"_callback"];
 }
 
 // get the developers who this user is following
 - (void)userFollowing:(CPString)aUserName
-            delegate:(id)aDelegate
-            selector:(SEL)aSelector
+             delegate:(id)aDelegate
+             selector:(SEL)aSelector
 {
-  var url = [CPString stringWithFormat:BaseUrl,
-                      PipeIdFollowing,
+  var url = [CPString stringWithFormat:BaseUrl, PipeIdFollowing,
                       encodeURIComponent(aUserName)];
-  [PMCMWjsonpWorker workerWithUrl:url
-                         delegate:aDelegate
-                         selector:aSelector
-                         callback:"_callback"];
+
+  [GRCWJsonpWorker workerWithUrl:url
+                        delegate:aDelegate
+                        selector:aSelector
+                        callback:"_callback"];
 }
 
 @end

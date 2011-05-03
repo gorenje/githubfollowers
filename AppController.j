@@ -19,6 +19,7 @@
 @import <Foundation/CPObject.j>
 
 @import "app/app.j"
+@import <GRKit/g_r_comm_worker.j>
 
 @implementation AppController : CPObject
 {

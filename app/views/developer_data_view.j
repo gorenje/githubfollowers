@@ -62,7 +62,6 @@
 
 - (id)objectValue
 {
-  return m_developer;
 }
 
 - (void)encodeWithCoder:(CPCoder)aCoder
@@ -88,10 +87,12 @@
 
 - (void)setTarget:(id)aTarget
 {
+  CPLogConsole( "Target set: " + aTarget);
 }
 
 - (void)setAction:(SEL)anAction
 {
+  CPLogConsole( "Action set: " + anAction);
 }
 
 @end
