@@ -73,6 +73,60 @@ objj_executeFile("CPViewController.j",YES);
 /* objj_executeFile("CPWebView.j",YES) */ (undefined);
 objj_executeFile("CPWindow.j",YES);
 objj_executeFile("CPWindowController.j",YES);
+p;18;_CPDisplayServer.jt;1218;@STATIC;1.0;I;22;Foundation/CPRunLoop.jt;1172;
+objj_executeFile("Foundation/CPRunLoop.j",NO);
+var _1=[],_2={},_3=[],_4={},_5=objj_msgSend(CPRunLoop,"mainRunLoop");
+_CPDisplayServerAddDisplayObject=function(_6){
+var _7=objj_msgSend(_6,"UID");
+if(typeof _2[_7]!=="undefined"){
+return;
+}
+var _8=_1.length;
+_2[_7]=_8;
+_1[_8]=_6;
+};
+_CPDisplayServerAddLayoutObject=function(_9){
+var _a=objj_msgSend(_9,"UID");
+if(typeof _4[_a]!=="undefined"){
+return;
+}
+var _b=_3.length;
+_4[_a]=_b;
+_3[_b]=_9;
+};
+var _c=objj_allocateClassPair(CPObject,"_CPDisplayServer"),_d=_c.isa;
+objj_registerClassPair(_c);
+class_addMethods(_d,[new objj_method(sel_getUid("run"),function(_e,_f){
+with(_e){
+while(_3.length||_1.length){
+var _10=0;
+for(;_10<_3.length;++_10){
+var _11=_3[_10];
+delete _4[objj_msgSend(_11,"UID")];
+objj_msgSend(_11,"layoutIfNeeded");
+}
+_3=[];
+_4={};
+_10=0;
+for(;_10<_1.length;++_10){
+if(_3.length){
+break;
+}
+var _11=_1[_10];
+delete _2[objj_msgSend(_11,"UID")];
+objj_msgSend(_11,"displayIfNeeded");
+}
+if(_10===_1.length){
+_1=[];
+_2={};
+}else{
+_1.splice(0,_10);
+}
+}
+objj_msgSend(_5,"performSelector:target:argument:order:modes:",sel_getUid("run"),_e,nil,0,[CPDefaultRunLoopMode]);
+}
+})]);
+objj_msgSend(_CPDisplayServer,"run");
 p;8;CPView.jt;63327;@STATIC;1.0;I;20;Foundation/CPArray.jI;26;Foundation/CPObjJRuntime.jI;18;Foundation/CPSet.ji;19;CGAffineTransform.ji;12;CGGeometry.ji;9;CPColor.ji;12;CPGeometry.ji;19;CPGraphicsContext.ji;13;CPResponder.ji;9;CPTheme.ji;18;_CPDisplayServer.jt;63079;
 objj_executeFile("Foundation/CPArray.j",NO);
 objj_executeFile("Foundation/CPObjJRuntime.j",NO);
@@ -6814,60 +6868,6 @@ objj_executeFile("_CPBorderlessWindowView.j",YES);
 objj_executeFile("_CPBorderlessBridgeWindowView.j",YES);
 objj_executeFile("CPDragServer.j",YES);
 objj_executeFile("CPView.j",YES);
-p;18;_CPDisplayServer.jt;1218;@STATIC;1.0;I;22;Foundation/CPRunLoop.jt;1172;
-objj_executeFile("Foundation/CPRunLoop.j",NO);
-var _1=[],_2={},_3=[],_4={},_5=objj_msgSend(CPRunLoop,"mainRunLoop");
-_CPDisplayServerAddDisplayObject=function(_6){
-var _7=objj_msgSend(_6,"UID");
-if(typeof _2[_7]!=="undefined"){
-return;
-}
-var _8=_1.length;
-_2[_7]=_8;
-_1[_8]=_6;
-};
-_CPDisplayServerAddLayoutObject=function(_9){
-var _a=objj_msgSend(_9,"UID");
-if(typeof _4[_a]!=="undefined"){
-return;
-}
-var _b=_3.length;
-_4[_a]=_b;
-_3[_b]=_9;
-};
-var _c=objj_allocateClassPair(CPObject,"_CPDisplayServer"),_d=_c.isa;
-objj_registerClassPair(_c);
-class_addMethods(_d,[new objj_method(sel_getUid("run"),function(_e,_f){
-with(_e){
-while(_3.length||_1.length){
-var _10=0;
-for(;_10<_3.length;++_10){
-var _11=_3[_10];
-delete _4[objj_msgSend(_11,"UID")];
-objj_msgSend(_11,"layoutIfNeeded");
-}
-_3=[];
-_4={};
-_10=0;
-for(;_10<_1.length;++_10){
-if(_3.length){
-break;
-}
-var _11=_1[_10];
-delete _2[objj_msgSend(_11,"UID")];
-objj_msgSend(_11,"displayIfNeeded");
-}
-if(_10===_1.length){
-_1=[];
-_2={};
-}else{
-_1.splice(0,_10);
-}
-}
-objj_msgSend(_5,"performSelector:target:argument:order:modes:",sel_getUid("run"),_e,nil,0,[CPDefaultRunLoopMode]);
-}
-})]);
-objj_msgSend(_CPDisplayServer,"run");
 p;13;CPAnimation.jt;5491;@STATIC;1.0;I;21;Foundation/CPObject.jI;20;Foundation/CPTimer.ji;23;CAMediaTimingFunction.jt;5393;
 objj_executeFile("Foundation/CPObject.j",NO);
 objj_executeFile("Foundation/CPTimer.j",NO);

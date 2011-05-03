@@ -189,6 +189,163 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithPickerMask:colo
 }
 objj_msgSend(CPColorPanel, "provideColorPickerClass:", GRColorStopPicker);
 
+p;17;g_r_comm_worker.jt;8511;@STATIC;1.0;t;8492;{var the_class = objj_allocateClassPair(CPObject, "GRBaseCommWorker"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_urlStr"), new objj_ivar("_delegate"), new objj_ivar("_selector")]);
+objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithUrl:delegate:selector:"), function $GRBaseCommWorker__initWithUrl_delegate_selector_(self, _cmd, urlString, aDelegate, aSelector)
+{ with(self)
+{
+  self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("GRBaseCommWorker").super_class }, "init");
+  if ( self ) {
+    _urlStr = urlString;
+    _delegate = aDelegate;
+    _selector = aSelector;
+    objj_msgSend(self, "generateRequest");
+  }
+  return self;
+}
+},["id","CPString","id","SEL"]), new objj_method(sel_getUid("initWithObject:urlString:"), function $GRBaseCommWorker__initWithObject_urlString_(self, _cmd, dataObj, aUrlString)
+{ with(self)
+{
+  return objj_msgSend(self, "initWithUrl:delegate:selector:", aUrlString, dataObj, sel_getUid("requestCompleted:"));
+}
+},["id","CPObject","CPString"]), new objj_method(sel_getUid("connection:didReceiveData:"), function $GRBaseCommWorker__connection_didReceiveData_(self, _cmd, aConnection, data)
+{ with(self)
+{
+  if ( _delegate && _selector && data !== "") {
+    objj_msgSend(_delegate, "performSelector:withObject:", _selector, objj_msgSend(data, "objectFromJSON"));
+  }
+}
+},["void","CPURLConnection","CPString"]), new objj_method(sel_getUid("connection:didFailWithError:"), function $GRBaseCommWorker__connection_didFailWithError_(self, _cmd, aConnection, error)
+{ with(self)
+{
+  CPLogConsole("[GR COMM WORKER] ERROR: For " +_urlStr + ", Got Error: " + error);
+  if ( _delegate && objj_msgSend(_delegate, "respondsToSelector:", sel_getUid("jsonRequestError:")) )
+    objj_msgSend(_delegate, "performSelector:withObject:", sel_getUid("jsonRequestError:"), error);
+}
+},["void","CPURLConnection","CPString"])]);
+class_addMethods(meta_class, [new objj_method(sel_getUid("workerWithUrl:delegate:selector:"), function $GRBaseCommWorker__workerWithUrl_delegate_selector_(self, _cmd, urlString, aDelegate, aSelector)
+{ with(self)
+{
+  return objj_msgSend(objj_msgSend(GRBaseCommWorker, "alloc"), "initWithUrl:delegate:selector:", urlString, aDelegate, aSelector);
+}
+},["id","CPString","id","SEL"])]);
+}
+{var the_class = objj_allocateClassPair(GRBaseCommWorker, "GRCWPostAction"),
+meta_class = the_class.isa;objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("generateRequest"), function $GRCWPostAction__generateRequest(self, _cmd)
+{ with(self)
+{
+  var request = objj_msgSend(LPURLPostRequest, "requestWithURL:", _urlStr);
+  objj_msgSend(request, "setContent:", _delegate);
+  objj_msgSend(CPURLConnection, "connectionWithRequest:delegate:", request, self);
+}
+},["void"])]);
+class_addMethods(meta_class, [new objj_method(sel_getUid("initWithObject:urlString:"), function $GRCWPostAction__initWithObject_urlString_(self, _cmd, dataObj, aUrlString)
+{ with(self)
+{
+  return objj_msgSend(objj_msgSend(GRCWPostAction, "alloc"), "initWithObject:urlString:", dataObj, aUrlString);
+}
+},["id","CPObject","CPString"])]);
+}
+{var the_class = objj_allocateClassPair(GRBaseCommWorker, "GRCWGetAction"),
+meta_class = the_class.isa;objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("generateRequest"), function $GRCWGetAction__generateRequest(self, _cmd)
+{ with(self)
+{
+  objj_msgSend(CPURLConnection, "connectionWithRequest:delegate:", objj_msgSend(CPURLRequest, "requestWithURL:", _urlStr), self);
+}
+},["void"])]);
+class_addMethods(meta_class, [new objj_method(sel_getUid("initWithObject:urlString:"), function $GRCWGetAction__initWithObject_urlString_(self, _cmd, dataObj, aUrlString)
+{ with(self)
+{
+  return objj_msgSend(objj_msgSend(GRCWGetAction, "alloc"), "initWithObject:urlString:", dataObj, aUrlString);
+}
+},["id","CPObject","CPString"])]);
+}
+{var the_class = objj_allocateClassPair(GRBaseCommWorker, "GRCWDeleteAction"),
+meta_class = the_class.isa;objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("generateRequest"), function $GRCWDeleteAction__generateRequest(self, _cmd)
+{ with(self)
+{
+  var request = objj_msgSend(CPURLRequest, "requestWithURL:", _urlStr);
+  objj_msgSend(request, "setHTTPMethod:", "DELETE");
+  objj_msgSend(CPURLConnection, "connectionWithRequest:delegate:", request, self);
+}
+},["void"])]);
+class_addMethods(meta_class, [new objj_method(sel_getUid("workerWithUrl:delegate:selector:"), function $GRCWDeleteAction__workerWithUrl_delegate_selector_(self, _cmd, urlString, aDelegate, aSelector)
+{ with(self)
+{
+  return objj_msgSend(objj_msgSend(GRCWDeleteAction, "alloc"), "initWithUrl:delegate:selector:", urlString, aDelegate, aSelector);
+}
+},["id","CPString","id","SEL"]), new objj_method(sel_getUid("initWithObject:urlString:"), function $GRCWDeleteAction__initWithObject_urlString_(self, _cmd, dataObj, aUrlString)
+{ with(self)
+{
+  return objj_msgSend(objj_msgSend(GRCWDeleteAction, "alloc"), "initWithObject:urlString:", dataObj, aUrlString);
+}
+},["id","CPObject","CPString"])]);
+}
+{var the_class = objj_allocateClassPair(GRBaseCommWorker, "GRCWPutAction"),
+meta_class = the_class.isa;objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("generateRequest"), function $GRCWPutAction__generateRequest(self, _cmd)
+{ with(self)
+{
+  var request = objj_msgSend(LPURLPostRequest, "requestWithURL:", _urlStr);
+  objj_msgSend(request, "setHTTPMethod:", "PUT");
+  objj_msgSend(request, "setContent:", _delegate);
+  objj_msgSend(CPURLConnection, "connectionWithRequest:delegate:", request, self);
+}
+},["void"])]);
+class_addMethods(meta_class, [new objj_method(sel_getUid("initWithObject:urlString:"), function $GRCWPutAction__initWithObject_urlString_(self, _cmd, dataObj, aUrlString)
+{ with(self)
+{
+  return objj_msgSend(objj_msgSend(GRCWPutAction, "alloc"), "initWithObject:urlString:", dataObj, aUrlString);
+}
+},["id","CPObject","CPString"])]);
+}
+{var the_class = objj_allocateClassPair(CPObject, "GRCWJsonpWorker"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_urlStr"), new objj_ivar("_delegate"), new objj_ivar("_selector")]);
+objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithUrl:delegate:selector:callback:"), function $GRCWJsonpWorker__initWithUrl_delegate_selector_callback_(self, _cmd, url, aDelegate, aSelector, aCallback)
+{ with(self)
+{
+  self = objj_msgSend(self, "init");
+  if ( self ) {
+    _urlStr = url;
+    _delegate = aDelegate;
+    _selector = aSelector;
+    objj_msgSend(CPJSONPConnection, "connectionWithRequest:callback:delegate:", objj_msgSend(CPURLRequest, "requestWithURL:", _urlStr), aCallback, self);
+  }
+  return self;
+}
+},["id","CPString","id","SEL","CPString"]), new objj_method(sel_getUid("connection:didReceiveData:"), function $GRCWJsonpWorker__connection_didReceiveData_(self, _cmd, aConnection, data)
+{ with(self)
+{
+  if ( _delegate && _selector && data ) {
+    objj_msgSend(_delegate, "performSelector:withObject:", _selector, data);
+  }
+}
+},["void","CPJSONPConnection","JSObject"]), new objj_method(sel_getUid("connection:didFailWithError:"), function $GRCWJsonpWorker__connection_didFailWithError_(self, _cmd, aConnection, error)
+{ with(self)
+{
+  CPLogConsole("[GR JSONP WORKER] ERROR: For " +_urlStr + ", Got Error: " + error);
+  if ( _delegate && objj_msgSend(_delegate, "respondsToSelector:", sel_getUid("jsonpRequestError:")) )
+    objj_msgSend(_delegate, "performSelector:withObject:", sel_getUid("jsonpRequestError:"), error);
+}
+},["void","CPJSONPConnection","CPString"])]);
+class_addMethods(meta_class, [new objj_method(sel_getUid("workerWithUrl:delegate:selector:"), function $GRCWJsonpWorker__workerWithUrl_delegate_selector_(self, _cmd, url, aDelegate, aSelector)
+{ with(self)
+{
+  return objj_msgSend(objj_msgSend(GRCWJsonpWorker, "alloc"), "initWithUrl:delegate:selector:callback:", url, aDelegate, aSelector, "callback");
+}
+},["GRCWJsonpWorker","CPString","id","SEL"]), new objj_method(sel_getUid("workerWithUrl:delegate:selector:callback:"), function $GRCWJsonpWorker__workerWithUrl_delegate_selector_callback_(self, _cmd, url, aDelegate, aSelector, aCallback)
+{ with(self)
+{
+  return objj_msgSend(objj_msgSend(GRCWJsonpWorker, "alloc"), "initWithUrl:delegate:selector:callback:", url, aDelegate, aSelector, aCallback);
+}
+},["GRCWJsonpWorker","CPString","id","SEL","CPString"])]);
+}
+
 p;14;g_r_geometry.jt;28094;@STATIC;1.0;t;28074;{var the_class = objj_allocateClassPair(CPObject, "GRShape"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("m_path"), new objj_ivar("m_current_context")]);
 objj_registerClassPair(the_class);
